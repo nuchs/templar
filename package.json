@@ -6,7 +6,11 @@
   "type": "module",
   "scripts": {
     "test": "tap",
-    "watch": "tap repl w"
+    "testw": "tap repl w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nuchs/templar.git"
   },
   "keywords": [
     "template",

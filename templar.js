@@ -47,11 +47,7 @@ export default class Registry {
     const result = template(...args);
 
     if (template.layout) {
-      const layoutTemplate = this.#templates[template.layout];
-      if (!layoutTemplate) {
-        throw new Error(`layout template ${template.layout} not found`);
-      }
-      return layoutTemplate(result);
+      return this.execute(template.layout, result);
     }
 
     return result;

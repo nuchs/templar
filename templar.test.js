@@ -1,19 +1,15 @@
 import t from "tap";
 import Registry from "./templar.js";
 
-function namedTemplate() {
-  return "Hello Templar";
-}
-
-function paramTemplate(name) {
-  return `Hello ${name}`;
-}
-
-function testLayout(body) {
-  return `Layout: ${body}`;
-}
-
 t.test("Basic Usage", async (t) => {
+  function namedTemplate() {
+    return "Hello Templar";
+  }
+
+  function paramTemplate(name) {
+    return `Hello ${name}`;
+  }
+
   const sut = new Registry();
 
   sut.add(() => "anonymous template", { name: "Michael" });
@@ -30,6 +26,10 @@ t.test("Basic Usage", async (t) => {
 });
 
 t.test("Using a layout", async (t) => {
+  function testLayout(body) {
+    return `Layout: ${body}`;
+  }
+
   const sut = new Registry();
   sut.add(testLayout);
 
@@ -45,6 +45,14 @@ t.test("Using a layout", async (t) => {
   }
   sut.add(laidOutByOption, { layout: "testLayout" });
   t.equal(sut.execute("laidOutByOption"), "Layout: stuff");
+
+  function nestedLayout(body) {
+    return `Nest: ${body}`;
+  }
+  nestedLayout.layout = "testLayout";
+  sut.add(nestedLayout);
+  sut.add(laidOutByOption, { layout: "nestedLayout" });
+  t.equal(sut.execute("laidOutByOption"), "Layout: Nest: stuff");
 });
 
 t.test("Invalid Template", async (t) => {
