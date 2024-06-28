@@ -1,0 +1,21 @@
+{
+  "name": "@nuchs/templar",
+  "version": "1.0.0",
+  "description": "Super Simple Templating",
+  "main": "templar.js",
+  "type": "module",
+  "scripts": {
+    "test": "tap",
+    "watch": "tap repl w"
+  },
+  "keywords": [
+    "template",
+    "templates",
+    "templating"
+  ],
+  "author": "nuchs",
+  "license": "MIT",
+  "dependencies": {
+    "tap": "^20.0.1"
+  }
+}
