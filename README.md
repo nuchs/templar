@@ -4,14 +4,22 @@ A very simple package for managing templates
 
 ## Writing templates
 
-Templates are just javascript functions that return a string. The functions can
-have parameters and you can provide arguments to be provided to the template
-when it is being executed.
+Templates are just javascript functions that return a string. The first
+parameter to the function is method that can be used to execute other templates,
+any further parameters are optional and will be populated with any arguments you
+provide when executing the template
 
 ### Example template
 ```javascript
-function Greeting(name) {
+function Greeting(tmpl, name) {
     return `Hello ${name}`
+}
+```
+
+### Example nested template
+```javascript
+function Nested(tmpl, name) {
+    return `Nested ${tmpl.execute('Greeting', name)}`
 }
 ```
 
@@ -24,7 +32,7 @@ add templates to registry and then execute them.
 ```javascript
 import Registry from '@nuchs/templar'
 
-function Greeting(name) {
+function Greeting(tmpl, name) {
     return `Hello ${name}`
 }
 
@@ -44,7 +52,7 @@ can override this by providing a name option when add the template.
 ```javascript
 import Registry from '@nuchs/templar'
 
-function Greeting(name) {
+function Greeting(tmpl, name) {
     return `Hello ${name}`
 }
 
@@ -67,7 +75,7 @@ providing a `layout` option when adding the template.
 Given the following templates:
 
 ```javascript
-function Layout(body) {
+function Layout(tmpl, body) {
     return `<html>
         <header>
             <title>Using a layout</title>
@@ -76,7 +84,7 @@ function Layout(body) {
     </html>`
 }
 
-function Content() {
+function Content(tmpl) {
     return ""
 }
 
@@ -96,7 +104,7 @@ registry.add(Content, { layout: 'Layout' })
 registry.execute(Content)
 ```
 
-In both case the output of rendering the template will be:
+In both cases the output of rendering the template will be:
 
 ```html
 <html>
@@ -109,7 +117,8 @@ In both case the output of rendering the template will be:
 </html>`
 ```
 
-At the moment you cannot nest layouts
+You can specify a layout for a layout template in which case the output of the
+first layout will be passed to the second.
 
 ## Loading Templates From File
 

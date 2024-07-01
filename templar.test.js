@@ -6,8 +6,12 @@ t.test("Basic Usage", async (t) => {
     return "Hello Templar";
   }
 
-  function paramTemplate(name) {
+  function paramTemplate(_, name) {
     return `Hello ${name}`;
+  }
+
+  function nestedTemplate(tmpl, name) {
+    return `Nest: ${tmpl("paramTemplate", name)}`;
   }
 
   const sut = new Registry();
@@ -23,10 +27,13 @@ t.test("Basic Usage", async (t) => {
 
   sut.add(paramTemplate);
   t.equal(sut.execute("paramTemplate", "Kit"), "Hello Kit");
+
+  sut.add(nestedTemplate);
+  t.equal(sut.execute("nestedTemplate", "Michael"), "Nest: Hello Michael");
 });
 
 t.test("Using a layout", async (t) => {
-  function testLayout(body) {
+  function testLayout(_, body) {
     return `Layout: ${body}`;
   }
   const sut = new Registry();
@@ -45,7 +52,7 @@ t.test("Using a layout", async (t) => {
   sut.add(laidOutByOption, { layout: "testLayout" });
   t.equal(sut.execute("laidOutByOption"), "Layout: stuff");
 
-  function nestedLayout(body) {
+  function nestedLayout(_, body) {
     return `Nest: ${body}`;
   }
   nestedLayout.layout = "testLayout";

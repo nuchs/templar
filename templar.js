@@ -1,5 +1,6 @@
 export default class Registry {
   #templates = {};
+  #executer = this.execute.bind(this);
 
   /**
    * Adds a template function to the registry.
@@ -44,7 +45,7 @@ export default class Registry {
       throw new Error(`template ${name} not found`);
     }
 
-    const result = template(...args);
+    const result = template(this.#executer, ...args);
 
     if (template.layout) {
       return this.execute(template.layout, result);
