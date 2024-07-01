@@ -29,7 +29,6 @@ t.test("Using a layout", async (t) => {
   function testLayout(body) {
     return `Layout: ${body}`;
   }
-
   const sut = new Registry();
   sut.add(testLayout);
 
