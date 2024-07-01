@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "tap",
-    "testw": "tap repl w"
+    "testw": "tap repl w",
+    "pub": "publish --access public"
   },
   "repository": {
     "type": "git",
