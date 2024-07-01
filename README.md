@@ -129,7 +129,7 @@ as the default for the module for this to work.
 ```javascript
 export default Greeting
 
-function Greeting(name) {
+function Greeting(tmpl, name) {
     return `Hello ${name}`
 }
 ```
