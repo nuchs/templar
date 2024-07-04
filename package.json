@@ -1,6 +1,6 @@
 {
   "name": "@nuchs/templar",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Super Simple Templating",
   "main": "templar.js",
   "type": "module",
@@ -20,7 +20,7 @@
   ],
   "author": "nuchs",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "tap": "^20.0.1"
   }
 }

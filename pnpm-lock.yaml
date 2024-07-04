@@ -7,7 +7,7 @@ settings:
 importers:
 
   .:
-    dependencies:
+    devDependencies:
       tap:
         specifier: ^20.0.1
         version: 20.0.1(@types/node@20.14.9)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.5.2)
