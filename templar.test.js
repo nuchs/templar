@@ -6,6 +6,19 @@ t.test("Basic Usage", async (t) => {
     return "Hello Templar";
   }
 
+  const sut = new Registry();
+
+  sut.add(() => "anonymous template", { name: "Michael" });
+  t.equal(sut.execute("Michael"), "anonymous template");
+
+  sut.add(namedTemplate);
+  t.equal(sut.execute("namedTemplate"), "Hello Templar");
+
+  sut.add(namedTemplate, { name: "override" });
+  t.equal(sut.execute("override"), "Hello Templar");
+});
+
+t.test("Advanced Usage", async (t) => {
   function paramTemplate(_, name) {
     return `Hello ${name}`;
   }
@@ -20,15 +33,6 @@ t.test("Basic Usage", async (t) => {
 
   const sut = new Registry();
 
-  sut.add(() => "anonymous template", { name: "Michael" });
-  t.equal(sut.execute("Michael"), "anonymous template");
-
-  sut.add(namedTemplate);
-  t.equal(sut.execute("namedTemplate"), "Hello Templar");
-
-  sut.add(namedTemplate, { name: "override" });
-  t.equal(sut.execute("override"), "Hello Templar");
-
   sut.add(paramTemplate);
   t.equal(sut.execute("paramTemplate", "Kit"), "Hello Kit");
 
@@ -40,48 +44,56 @@ t.test("Basic Usage", async (t) => {
 });
 
 t.test("Using a layout", async (t) => {
-  function testLayout(_, body) {
-    return `Layout: ${body}`;
+  function basicLayout(_, content) {
+    return `Layout: ${content}`;
   }
+
+  function nestedLayout(_, content) {
+    return `Nest: ${content}`;
+  }
+
+  function multipartLayout(_, content) {
+    return `Head: ${content.head}, Body: ${content.body}`;
+  }
+
+  function laidOut() {
+    return "laid";
+  }
+
+  function laidOutMultiPart() {
+    return {
+      head: "top",
+      body: "bottom",
+    };
+  }
+
   const sut = new Registry();
-  sut.add(testLayout);
+  sut.add(basicLayout);
 
-  function laidOutByProperty() {
-    return "stuff";
-  }
-  laidOutByProperty.layout = "testLayout";
-  sut.add(laidOutByProperty);
-  t.equal(sut.execute("laidOutByProperty"), "Layout: stuff");
+  laidOut.layout = "basicLayout";
+  sut.add(laidOut);
+  t.equal(sut.execute("laidOut"), "Layout: laid");
 
-  function laidOutByOption() {
-    return "stuff";
-  }
-  sut.add(laidOutByOption, { layout: "testLayout" });
-  t.equal(sut.execute("laidOutByOption"), "Layout: stuff");
-
-  function nestedLayout(_, body) {
-    return `Nest: ${body}`;
-  }
-  nestedLayout.layout = "testLayout";
+  nestedLayout.layout = "basicLayout";
   sut.add(nestedLayout);
-  sut.add(laidOutByOption, { layout: "nestedLayout" });
-  t.equal(sut.execute("laidOutByOption"), "Layout: Nest: stuff");
+  sut.add(laidOut, { layout: "nestedLayout" });
+  t.equal(sut.execute("laidOut"), "Layout: Nest: laid");
+
+  sut.add(multipartLayout);
+  sut.add(laidOutMultiPart, { layout: "multipartLayout" });
+  t.equal(sut.execute("laidOutMultiPart"), "Head: top, Body: bottom");
 });
 
-t.test("Invalid Template", async (t) => {
+t.test("Bad templates", async (t) => {
   const sut = new Registry();
-  t.throws(() => sut.add(123));
-});
-
-t.test("Missing template", async (t) => {
-  const sut = new Registry();
-  t.throws(() => sut.execute("no such template"));
 
   const template = () => "";
   template.layout = "No such layout";
   sut.add(template);
 
   t.throws(() => sut.execute("template"));
+  t.throws(() => sut.add(123));
+  t.throws(() => sut.execute("no such template"));
 });
 
 t.test("Loading templates from file", async (t) => {
