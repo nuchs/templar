@@ -14,6 +14,10 @@ t.test("Basic Usage", async (t) => {
     return `Nest: ${tmpl("paramTemplate", name)}`;
   }
 
+  function collectionTemplate(_) {
+    return ["a", "b", "c"];
+  }
+
   const sut = new Registry();
 
   sut.add(() => "anonymous template", { name: "Michael" });
@@ -30,6 +34,9 @@ t.test("Basic Usage", async (t) => {
 
   sut.add(nestedTemplate);
   t.equal(sut.execute("nestedTemplate", "Michael"), "Nest: Hello Michael");
+
+  sut.add(collectionTemplate);
+  t.equal(sut.execute("collectionTemplate"), "a\nb\nc");
 });
 
 t.test("Using a layout", async (t) => {

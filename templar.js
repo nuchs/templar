@@ -45,7 +45,11 @@ export default class Registry {
       throw new Error(`template ${name} not found`);
     }
 
-    const result = template(this.#executer, ...args);
+    let result = template(this.#executer, ...args);
+
+    if (result.join) {
+      result = result.join("\n");
+    }
 
     if (template.layout) {
       return this.execute(template.layout, result);

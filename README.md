@@ -4,10 +4,14 @@ A very simple package for managing templates
 
 ## Writing templates
 
-Templates are just javascript functions that return a string. The first
-parameter to the function is method that can be used to execute other templates,
-any further parameters are optional and will be populated with any arguments you
-provide when executing the template
+Templates are just javascript functions that return a string or an array of
+string. 
+
+The first parameter to the function is a method that can be used to execute
+other templates, any further parameters are optional and will be populated with
+any arguments you provide when executing the template
+
+If you return an array of strings they will be joined together with newlines
 
 ### Example template
 ```javascript
