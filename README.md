@@ -4,10 +4,9 @@ A very simple package for managing templates
 
 ## Writing templates
 
-Templates are just javascript functions that return a string or an array of
-string. 
+Templates are just javascript functions. 
 
-The first parameter to the function is a method that can be used to execute
+The first parameter to the function is a function that can be used to execute
 other templates, any further parameters are optional and will be populated with
 any arguments you provide when executing the template
 
@@ -24,6 +23,15 @@ function Greeting(tmpl, name) {
 ```javascript
 function Nested(tmpl, name) {
     return `Nested ${tmpl.execute('Greeting', name)}`
+}
+```
+
+### Example of returning a collection
+```javascript
+function Greeting(tmpl, contacts) {
+    return contacts.map(contact => `
+        <tr><td>${contact.name}</td><td>${contact.email}</td></tr>
+    `)
 }
 ```
 
@@ -74,7 +82,8 @@ Console.log(registry.execute('Salutation', 'World'))
 Templar provides basic layout support. You can specify the output of one
 template to be passed to another which will then be rendered. You can specify
 the layout either by setting the `layout` property on the template or by
-providing a `layout` option when adding the template.
+providing a `layout` option when adding the template. Specifying the layout when
+adding the template will override the layout provided in the option.
 
 Given the following templates:
 
@@ -123,6 +132,58 @@ In both cases the output of rendering the template will be:
 
 You can specify a layout for a layout template in which case the output of the
 first layout will be passed to the second.
+
+### Nested Layouts
+```javascript
+function Nested(tmpl, body) {
+    return `Nested: ${body}`
+}
+
+function Layout(tmpl, body) {
+    return `Layout: ${body}`
+}
+Layout.layout = 'Nested'
+
+function Laid() {
+    return "Egg"
+}
+Laid.layout = 'Layout'
+
+registry.add(Nested)
+registry.add(Layout)
+registry.add(Laid)
+
+registry.execute("Laid")
+
+// Outputs
+// Nested: Layout: Egg
+```
+
+You can also have multiart layouts by having a template return an object rather
+than a string e.g.
+
+### Multiple layouts
+```javascript
+
+function multipartLayout(_, content) {
+    return `Head: ${content.head}, Body: ${content.body}`;
+}
+
+function laidOutMultiPart() {
+    return {
+        head: "top",
+        body: "bottom",
+    };
+}
+laidOutMultiPart.layout = "multipartLayout";
+
+registry.add(multipartLayout);
+registry.add(laidOutMultiPart);
+registry.execute("laidOutMultiPart");
+
+// Outputs
+// Head: top, Body: bottom
+```
 
 ## Loading Templates From File
 
