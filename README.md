@@ -162,7 +162,7 @@ registry.execute("Laid")
 You can also have multiart layouts by having a template return an object rather
 than a string e.g.
 
-### Multiple layouts
+### Multipart layouts
 ```javascript
 
 function multipartLayout(_, content) {
